@@ -3,6 +3,8 @@
 import subprocess
 import optparse
 # optparse get the arguments from user and parse them to our code
+import re
+import sys
 
 
 def get_argument():
@@ -26,6 +28,14 @@ def change_mac(interface, new_mac):
 
 options = get_argument()
 
-change_mac(options.interface, options.new_mac)
+# change_mac(options.interface, options.new_mac)
 
+ifconfig_result = subprocess.check_output(["ifconfig", options.interface]).decode(sys.stdout.encoding)
+print(ifconfig_result)
+
+mac_address_search_result = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result)
+if mac_address_search_result:
+    print(mac_address_search_result.group(0))
+else:
+    print("[-] Could not read MAC address.")
 
